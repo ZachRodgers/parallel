@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Parallel Developer Testing Portal</title>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1030.0.min.js"></script>
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
@@ -138,119 +139,66 @@
       location.reload();
     });
 
-    async function checkJetsonStatus() {
-      try {
-        const response = await fetch('http://jetson-ip-address/api/status'); // Replace with actual Jetson IP address or API endpoint
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        if (data.status === 'online') {
-          document.getElementById('status-box').classList.remove('offline');
-          document.getElementById('status-box').classList.add('online');
-          document.getElementById('reboot').style.opacity = '1';
-          document.getElementById('reboot').disabled = false;
-          document.getElementById('shutdown').style.opacity = '1';
-          document.getElementById('shutdown').disabled = false;
-          document.getElementById('status-box').textContent = `Online ${data.temperature}°C`;
-        } else {
-          throw new Error('Jetson is offline');
-        }
-      } catch (error) {
-        document.getElementById('status-box').classList.remove('online');
-        document.getElementById('status-box').classList.add('offline');
-        document.getElementById('reboot').style.opacity = '0.3';
-        document.getElementById('reboot').disabled = true;
-        document.getElementById('shutdown').style.opacity = '0.3';
-        document.getElementById('shutdown').disabled = true;
-        document.getElementById('status-box').textContent = 'Offline N/A°C';
-      }
-    }
-
-    checkJetsonStatus();
-
-    document.getElementById('reboot').addEventListener('click', async function() {
-      try {
-        await fetch('http://jetson-ip-address/api/reboot', { method: 'POST' }); // Replace with actual Jetson IP address or API endpoint
-        alert('Reboot command sent');
-      } catch (error) {
-        console.error('Error sending reboot command:', error);
-      }
+    AWS.config.update({
+      region: 'us-east-1', // Replace with your bucket region
+      credentials: new AWS.Credentials(AKIA4VDBMA443SEQSQ5J, pu8fT9inl6sn+dmvpougpfb1+mIRv3J39aFTb5uX) // Replace with your credentials
     });
 
-    document.getElementById('shutdown').addEventListener('click', async function() {
-      try {
-        await fetch('http://jetson-ip-address/api/shutdown', { method: 'POST' }); // Replace with actual Jetson IP address or API endpoint
-        alert('Shutdown command sent');
-      } catch (error) {
-        console.error('Error sending shutdown command:', error);
-      }
-    });
+    const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+    const bucketName = 'jetson-parking-images'; // Replace with your bucket name
 
     async function fetchS3Files() {
       try {
-          // Replace with your actual bucket name
-          const bucketUrl = 'http://jetson-parking-images.s3.amazonaws.com';
+        const params = {
+          Bucket: bucketName
+        };
 
-          // Fetch the list of files in the S3 bucket
-          const response = await fetch(bucketUrl);
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
+        s3.listObjectsV2(params, function(err, data) {
+          if (err) {
+            console.error('Error fetching S3 files:', err);
+            return;
           }
-          
-          // Parse the response as text and convert to XML
-          const xmlText = await response.text();
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(xmlText, "application/xml");
 
-          // Get all the object keys (file names) from the XML
-          const keys = Array.from(xml.getElementsByTagName("Key"));
-          
-          // Clear the current entries in the table
           const entriesElem = document.getElementById('entries');
           entriesElem.innerHTML = '';
 
-          // Iterate over each file
-          keys.forEach(keyElement => {
-              const fileName = keyElement.textContent;
+          data.Contents.forEach(function(item) {
+            const fileName = item.Key;
+            const [lotID, plate, date, state] = fileName.split('_');
 
-              // Extract information from the file name
-              const [lotID, plate, date, state] = fileName.split('_');
-              
-              // Create a new row in the table for each file
-              const row = document.createElement('tr');
-              
-              const lotCell = document.createElement('td');
-              lotCell.textContent = lotID;
-              row.appendChild(lotCell);
+            const row = document.createElement('tr');
 
-              const plateCell = document.createElement('td');
-              plateCell.textContent = plate;
-              row.appendChild(plateCell);
+            const lotCell = document.createElement('td');
+            lotCell.textContent = lotID;
+            row.appendChild(lotCell);
 
-              const dateCell = document.createElement('td');
-              dateCell.textContent = date;
-              row.appendChild(dateCell);
+            const plateCell = document.createElement('td');
+            plateCell.textContent = plate;
+            row.appendChild(plateCell);
 
-              const stateCell = document.createElement('td');
-              stateCell.textContent = state.replace('.jpg', ''); // Remove file extension
-              row.appendChild(stateCell);
+            const dateCell = document.createElement('td');
+            dateCell.textContent = date;
+            row.appendChild(dateCell);
 
-              const imgCell = document.createElement('td');
-              const img = document.createElement('img');
-              img.src = `${bucketUrl}/${fileName}`;
-              img.alt = 'loading...';
-              imgCell.appendChild(img);
-              row.appendChild(imgCell);
+            const stateCell = document.createElement('td');
+            stateCell.textContent = state.replace('.jpg', '');
+            row.appendChild(stateCell);
 
-              entriesElem.appendChild(row);
+            const imgCell = document.createElement('td');
+            const img = document.createElement('img');
+            img.src = `https://${bucketName}.s3.amazonaws.com/${fileName}`;
+            img.alt = 'loading...';
+            imgCell.appendChild(img);
+            row.appendChild(imgCell);
+
+            entriesElem.appendChild(row);
           });
+        });
       } catch (error) {
-          console.error('Error fetching S3 files:', error);
+        console.error('Error fetching S3 files:', error);
       }
     }
 
-    // Fetch the files when the page loads
     document.addEventListener("DOMContentLoaded", fetchS3Files);
   </script>
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
