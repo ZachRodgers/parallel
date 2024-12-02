@@ -155,6 +155,10 @@
         if (data.status === 'online') {
           document.getElementById('status-box').classList.remove('offline');
           document.getElementById('status-box').classList.add('online');
+        document.getElementById('reboot').style.opacity = '1';
+        document.getElementById('reboot').disabled = false;
+        document.getElementById('shutdown').style.opacity = '1';
+        document.getElementById('shutdown').disabled = false;
           document.getElementById('status-box').textContent = `Online ${data.temperature}°C`;
         } else {
           throw new Error('Jetson is offline');
@@ -162,6 +166,10 @@
       } catch (error) {
         document.getElementById('status-box').classList.remove('online');
         document.getElementById('status-box').classList.add('offline');
+        document.getElementById('reboot').style.opacity = '0.3';
+        document.getElementById('reboot').disabled = true;
+        document.getElementById('shutdown').style.opacity = '0.3';
+        document.getElementById('shutdown').disabled = true;
         document.getElementById('status-box').textContent = 'Offline N/A°C';
       }
     }
@@ -187,7 +195,7 @@
     });
   </script>
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
-  <img src="PoweredByParallel.svg" alt="Powered by Parallel" style="width: 150px;">
+  <img src="https://github.com/ZachRodgers/parallel/raw/main/PoweredByParallel.svg" alt="Powered by Parallel" style="width: 150px;">
 </div>
 </body>
 </html>
