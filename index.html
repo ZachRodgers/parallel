@@ -135,12 +135,12 @@
   </div>
   <script>
     document.getElementById('refresh').addEventListener('click', function() {
-      location.reload();
+      fetchData();
     });
 
     async function fetchData() {
       try {
-        const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/data.json');
+        const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/data.json', { cache: 'no-store' });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
