@@ -91,7 +91,6 @@
       width: calc(100% - 20px);
       margin: 0 auto;
     }
-    }
     .scrollable-table::-webkit-scrollbar {
       width: 14px;
     }
@@ -129,14 +128,7 @@
           </tr>
         </thead>
         <tbody id="entries">
-          <tr>
-            <td>1a2b-3c4d</td>
-            <td>ABC1234</td>
-            <td>2024-01-01T05:00:00</td>
-            <td>Enter</td>
-            <td><img src="https://example.com/plate1.png" alt="loading..."></td>
-          </tr>
-          <!-- More rows will be added dynamically here -->
+          <!-- Rows will be added dynamically here -->
         </tbody>
       </table>
     </div>
@@ -156,10 +148,10 @@
         if (data.status === 'online') {
           document.getElementById('status-box').classList.remove('offline');
           document.getElementById('status-box').classList.add('online');
-        document.getElementById('reboot').style.opacity = '1';
-        document.getElementById('reboot').disabled = false;
-        document.getElementById('shutdown').style.opacity = '1';
-        document.getElementById('shutdown').disabled = false;
+          document.getElementById('reboot').style.opacity = '1';
+          document.getElementById('reboot').disabled = false;
+          document.getElementById('shutdown').style.opacity = '1';
+          document.getElementById('shutdown').disabled = false;
           document.getElementById('status-box').textContent = `Online ${data.temperature}°C`;
         } else {
           throw new Error('Jetson is offline');
@@ -194,10 +186,75 @@
         console.error('Error sending shutdown command:', error);
       }
     });
+
+    async function fetchS3Files() {
+      try {
+          // Replace with your actual bucket name
+          const bucketUrl = 'http://jetson-parking-images.s3.amazonaws.com';
+
+          // Fetch the list of files in the S3 bucket
+          const response = await fetch(bucketUrl);
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          
+          // Parse the response as text and convert to XML
+          const xmlText = await response.text();
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(xmlText, "application/xml");
+
+          // Get all the object keys (file names) from the XML
+          const keys = Array.from(xml.getElementsByTagName("Key"));
+          
+          // Clear the current entries in the table
+          const entriesElem = document.getElementById('entries');
+          entriesElem.innerHTML = '';
+
+          // Iterate over each file
+          keys.forEach(keyElement => {
+              const fileName = keyElement.textContent;
+
+              // Extract information from the file name
+              const [lotID, plate, date, state] = fileName.split('_');
+              
+              // Create a new row in the table for each file
+              const row = document.createElement('tr');
+              
+              const lotCell = document.createElement('td');
+              lotCell.textContent = lotID;
+              row.appendChild(lotCell);
+
+              const plateCell = document.createElement('td');
+              plateCell.textContent = plate;
+              row.appendChild(plateCell);
+
+              const dateCell = document.createElement('td');
+              dateCell.textContent = date;
+              row.appendChild(dateCell);
+
+              const stateCell = document.createElement('td');
+              stateCell.textContent = state.replace('.jpg', ''); // Remove file extension
+              row.appendChild(stateCell);
+
+              const imgCell = document.createElement('td');
+              const img = document.createElement('img');
+              img.src = `${bucketUrl}/${fileName}`;
+              img.alt = 'loading...';
+              imgCell.appendChild(img);
+              row.appendChild(imgCell);
+
+              entriesElem.appendChild(row);
+          });
+      } catch (error) {
+          console.error('Error fetching S3 files:', error);
+      }
+    }
+
+    // Fetch the files when the page loads
+    document.addEventListener("DOMContentLoaded", fetchS3Files);
   </script>
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
-  <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
+  <img src="PoweredByParallel.svg" alt="Powered by Parallel" style="width: 150px;">
 </div>
 </body>
 </html>
-
