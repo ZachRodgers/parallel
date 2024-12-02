@@ -9,7 +9,6 @@
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: center;
       height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
@@ -18,21 +17,24 @@
       width: 1280px;
       padding: 20px;
       background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+      height: 100vh;
+      overflow-y: auto;
     }
     .top-bar {
       display: flex;
       justify-content: space-between;
       margin-bottom: 20px;
+      gap: 10px;
     }
     .status-box {
+      flex: 1;
       padding: 20px;
-      border-radius: 8px;
       font-size: 18px;
       font-weight: bold;
       text-align: center;
       border: 2px solid;
+      border-radius: 8px;
     }
     .online {
       background-color: #d4edda;
@@ -45,6 +47,7 @@
       color: #721c24;
     }
     button {
+      flex: 1;
       padding: 15px;
       font-size: 18px;
       font-weight: bold;
@@ -134,3 +137,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
