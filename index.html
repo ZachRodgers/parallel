@@ -54,6 +54,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      color: #000000;
     }
     .refresh-btn {
       background-color: #d3d3d3;
@@ -87,6 +88,9 @@
       max-height: 400px;
       overflow-y: auto;
       padding-right: 20px;
+      width: calc(100% - 20px);
+      margin: 0 auto;
+    }
     }
     .scrollable-table::-webkit-scrollbar {
       width: 14px;
@@ -129,7 +133,7 @@
             <td>ABC1234</td>
             <td>2024-01-01T05:00:00</td>
             <td>Enter</td>
-            <td><img src="https://example.com/plate1.png" alt="Plate Image"></td>
+            <td><img src="https://example.com/plate1.png" alt="loading..."></td>
           </tr>
           <!-- More rows will be added dynamically here -->
         </tbody>
@@ -182,8 +186,8 @@
       }
     });
   </script>
-<div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px;">
-  <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
+<div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
+  <img src="https://github.com/ZachRodgers/parallel/raw/main/PoweredByParallel.svg" alt="Powered by Parallel" style="width: 150px;">
 </div>
 </body>
 </html>
