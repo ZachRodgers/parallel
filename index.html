@@ -110,12 +110,8 @@
 </head>
 <body>
   <div class="container">
-    <div class="top-bar">
-      <div id="status-box" class="status-box offline">Offline --°C</div>
-      <button id="refresh" class="refresh-btn" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <span>Refresh</span>
-        <span id="indicator" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #00CCFF; opacity: 0;"></span>
-      </button>
+    
+      <button id="download" class="download-btn" style="background-color: #4CAF50; color: white;">Download</button>
       <button id="reboot" class="reboot-btn shutdown-btn">Reboot</button>
       <button id="shutdown" class="shutdown-btn" style="opacity: 1;">Shutdown</button>
     </div>
@@ -221,6 +217,26 @@
         shutdownButton.disabled = false;
       }
     }
+  document.getElementById('download').addEventListener('click', function() {
+      const data = [];
+      const rows = document.querySelectorAll('#entries tr');
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = Array.from(cells).map(cell => cell.textContent);
+        data.push(rowData);
+      });
+
+      const csvContent = 'data:text/csv;charset=utf-8,' +
+        ['LotID,Plate,Date,State,Plate Img', ...data.map(e => e.join(','))].join('
+');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'parking_data.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
   </script>
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
   <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
