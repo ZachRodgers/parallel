@@ -116,8 +116,8 @@
         <span>Refresh</span>
         <span id="indicator" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #00CCFF; opacity: 0;"></span>
       </button>
-      <button id="reboot" class="reboot-btn">Reboot</button>
-      <button id="shutdown" class="shutdown-btn">Shutdown</button>
+      <button id="reboot" class="reboot-btn shutdown-btn">Reboot</button>
+      <button id="shutdown" class="shutdown-btn" style="opacity: 1;">Shutdown</button>
     </div>
     <div class="scrollable-table">
       <table>
@@ -188,8 +188,14 @@
       }
     }
 
-    document.addEventListener("DOMContentLoaded", fetchData);
-    setInterval(fetchData, 5000);
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchData();
+      updateButtonState();
+    });
+    setInterval(() => {
+      fetchData();
+      updateButtonState();
+    }, 5000);
   function triggerIndicator() {
       const indicator = document.getElementById('indicator');
       indicator.style.opacity = 1;
@@ -198,10 +204,26 @@
         indicator.style.opacity = 0;
       }, 1000);
     }
+  function updateButtonState() {
+      const statusBox = document.getElementById('status-box');
+      const isOffline = statusBox.classList.contains('offline');
+      const rebootButton = document.getElementById('reboot');
+      const shutdownButton = document.getElementById('shutdown');
+      if (isOffline) {
+        rebootButton.style.opacity = '0.3';
+        shutdownButton.style.opacity = '0.3';
+        rebootButton.disabled = true;
+        shutdownButton.disabled = true;
+      } else {
+        rebootButton.style.opacity = '1';
+        shutdownButton.style.opacity = '1';
+        rebootButton.disabled = false;
+        shutdownButton.disabled = false;
+      }
+    }
   </script>
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
   <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
 </div>
 </body>
 </html>
-
