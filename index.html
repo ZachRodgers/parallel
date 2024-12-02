@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parking Camera Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    button {
+      margin: 10px 5px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    img {
+      width: 80px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Parking Camera Portal</h1>
+    <p>Status: <span id="status">Offline</span></p>
+    <p>Temperature: <span id="temperature">--°C</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>LotID</th>
+          <th>Plate</th>
+          <th>Date</th>
+          <th>State</th>
+          <th>Plate Img</th>
+        </tr>
+      </thead>
+      <tbody id="entries"></tbody>
+    </table>
+    <button id="refresh">Refresh</button>
+    <button id="reboot">Reboot</button>
+    <button id="shutdown">Shutdown</button>
+  </div>
+</body>
+</html>
