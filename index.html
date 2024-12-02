@@ -190,8 +190,7 @@
   function triggerIndicator() {
       const indicator = document.getElementById('indicator');
       indicator.style.opacity = 1;
-      setTimeout(() => {
-        indicator.style.transition = 'opacity 1s ease-out';
+      indicator.style.transition = '';
         indicator.style.opacity = 0;
       }, 1000);
     }
