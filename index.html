@@ -187,15 +187,14 @@
 
     document.addEventListener("DOMContentLoaded", fetchData);
     setInterval(fetchData, 5000);
-    setInterval(fetchData, 5000);
   function triggerIndicator() {
       const indicator = document.getElementById('indicator');
       indicator.style.opacity = 1;
+      indicator.style.transition = 'opacity 0.5s ease-out';
       setTimeout(() => {
-        indicator.style.transition = 'opacity 0.5s ease-out';
-        setTimeout(() => {
-          indicator.style.opacity = 0;
-        }, 500);
+        indicator.style.opacity = 0;
+      }, 500);
+    }, 500);
       }, 500);
     }, 1000);
     }
