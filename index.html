@@ -151,7 +151,7 @@
         const entriesElem = document.getElementById('entries');
         entriesElem.innerHTML = '';
 
-        data.entries.forEach(entryString => {
+        data.entries.slice().reverse().forEach(entryString => {
           // Split the string into parts
           const [lotID, plate, date, state] = entryString.split('_');
 
