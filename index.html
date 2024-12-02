@@ -6,7 +6,7 @@
   <title>Parking Camera Portal</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', sans-serif;
       display: flex;
       justify-content: center;
       height: 100vh;
@@ -86,12 +86,13 @@
     .scrollable-table {
       max-height: 400px;
       overflow-y: auto;
+      padding-right: 20px;
     }
     .scrollable-table::-webkit-scrollbar {
-      width: 10px;
+      width: 14px;
     }
     .scrollable-table::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: #ffffff;
     }
     .scrollable-table::-webkit-scrollbar-thumb {
       background: #888;
@@ -101,11 +102,12 @@
       background: #555;
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
     <div class="top-bar">
-      <div id="status-box" class="status-box online">Online 32°C</div>
+      <div id="status-box" class="status-box offline">Offline N/A°C</div>
       <button id="refresh" class="refresh-btn">Refresh</button>
       <button id="reboot" class="reboot-btn">Reboot</button>
       <button id="shutdown" class="shutdown-btn">Shutdown</button>
@@ -134,7 +136,54 @@
       </table>
     </div>
   </div>
-  <script src="app.js"></script>
+  <script>
+    document.getElementById('refresh').addEventListener('click', function() {
+      location.reload();
+    });
+
+    async function checkJetsonStatus() {
+      try {
+        const response = await fetch('http://jetson-ip-address/api/status'); // Replace with actual Jetson IP address or API endpoint
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        if (data.status === 'online') {
+          document.getElementById('status-box').classList.remove('offline');
+          document.getElementById('status-box').classList.add('online');
+          document.getElementById('status-box').textContent = `Online ${data.temperature}°C`;
+        } else {
+          throw new Error('Jetson is offline');
+        }
+      } catch (error) {
+        document.getElementById('status-box').classList.remove('online');
+        document.getElementById('status-box').classList.add('offline');
+        document.getElementById('status-box').textContent = 'Offline N/A°C';
+      }
+    }
+
+    checkJetsonStatus();
+
+    document.getElementById('reboot').addEventListener('click', async function() {
+      try {
+        await fetch('http://jetson-ip-address/api/reboot', { method: 'POST' }); // Replace with actual Jetson IP address or API endpoint
+        alert('Reboot command sent');
+      } catch (error) {
+        console.error('Error sending reboot command:', error);
+      }
+    });
+
+    document.getElementById('shutdown').addEventListener('click', async function() {
+      try {
+        await fetch('http://jetson-ip-address/api/shutdown', { method: 'POST' }); // Replace with actual Jetson IP address or API endpoint
+        alert('Shutdown command sent');
+      } catch (error) {
+        console.error('Error sending shutdown command:', error);
+      }
+    });
+  </script>
+<div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px;">
+  <img src="Powered by Parallel.svg" alt="Powered by Parallel" style="width: 150px;">
+</div>
 </body>
 </html>
-
