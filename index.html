@@ -154,16 +154,20 @@
         };
 
         s3.listObjectsV2(params, function(err, data) {
+          console.log('Listing S3 objects with params:', params);
           if (err) {
+            console.error('Error details:', err);
             console.error('Error fetching S3 files:', err);
             return;
           }
 
+          console.log('Successfully fetched S3 data:', data);
           const entriesElem = document.getElementById('entries');
           entriesElem.innerHTML = '';
 
           data.Contents.forEach(function(item) {
             const fileName = item.Key;
+            console.log('Processing file:', fileName);
             const [lotID, plate, date, state] = fileName.split('_');
 
             const row = document.createElement('tr');
