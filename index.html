@@ -46,8 +46,9 @@
       border-color: #721c24;
       color: #721c24;
     }
-    button {
+     {
       flex: 1;
+      width: 20%;
       padding: 15px;
       font-size: 18px;
       font-weight: bold;
@@ -112,12 +113,13 @@
   <div class="container">
     <div class="top-bar">
       <div id="status-box" class="status-box offline">Offline --°C</div>
-      <button id="refresh" class="refresh-btn" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <button id="refresh" class="refresh-btn" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px;">
         <span>Refresh</span>
         <span id="indicator" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #00CCFF; opacity: 0;"></span>
       </button>
-      <button id="reboot" class="reboot-btn">Reboot</button>
-      <button id="shutdown" class="shutdown-btn">Shutdown</button>
+      <button id="reboot" class="reboot-btn" style="flex: 1;">Reboot</button>
+      <button id="shutdown" class="shutdown-btn" style="flex: 1;">Shutdown</button>
+      <button id="download" class="download-btn" style="flex: 1; background-color: #4CAF50; color: white;">Download</button>
     </div>
     <div class="scrollable-table">
       <table>
