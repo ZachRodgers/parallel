@@ -117,7 +117,7 @@
         <span>Refresh</span>
         <span id="indicator" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #00CCFF; opacity: 0;"></span>
       </button>
-      <button id="reboot" class="reboot-btn" style="flex: 1;">Reboot</button>
+      <button id="reboot" class="reboot-btn shutdown-btn" style="flex: 1;">Reboot</button>
       <button id="shutdown" class="shutdown-btn" style="flex: 1;">Shutdown</button>
       <button id="download" class="download-btn" style="flex: 1; background-color: #4CAF50; color: white;">Download</button>
     </div>
@@ -190,8 +190,14 @@
       }
     }
 
-    document.addEventListener("DOMContentLoaded", fetchData);
-    setInterval(fetchData, 5000);
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchData();
+      updateButtonState();
+    });
+    setInterval(() => {
+      fetchData();
+      updateButtonState();
+    }, 5000);
   function triggerIndicator() {
       const indicator = document.getElementById('indicator');
       indicator.style.opacity = 1;
@@ -199,6 +205,23 @@
       setTimeout(() => {
         indicator.style.opacity = 0;
       }, 1000);
+    }
+  function updateButtonState() {
+      const statusBox = document.getElementById('status-box');
+      const isOffline = statusBox.classList.contains('offline');
+      const rebootButton = document.getElementById('reboot');
+      const shutdownButton = document.getElementById('shutdown');
+      if (isOffline) {
+        rebootButton.style.opacity = '0.3';
+        shutdownButton.style.opacity = '0.3';
+        rebootButton.disabled = true;
+        shutdownButton.disabled = true;
+      } else {
+        rebootButton.style.opacity = '1';
+        shutdownButton.style.opacity = '1';
+        rebootButton.disabled = false;
+        shutdownButton.disabled = false;
+      }
     }
   </script>
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
