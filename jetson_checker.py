@@ -29,12 +29,12 @@ def update_heartbeat_on_github(data):
         if response.status_code == 200:
             json_data = response.json()
             sha = json_data['sha']
-            content = json.dumps(data).encode('utf-8').decode('latin1').encode('base64').decode('utf-8')
 
             # Prepare the update payload
+            content = json.dumps(data, indent=2).encode('utf-8').decode('utf-8')
             update_data = {
                 'message': 'Updating Jetson status',
-                'content': content,
+                'content': content.encode('base64').decode('utf-8'),
                 'sha': sha
             }
 
@@ -48,6 +48,7 @@ def update_heartbeat_on_github(data):
             print(f"Failed to get current heartbeat data: {response.status_code}")
     except requests.RequestException as e:
         print(f"Error updating heartbeat: {e}")
+
 
 def main():
     while True:
