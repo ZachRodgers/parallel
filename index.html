@@ -226,7 +226,7 @@
 
     async function fetchHeartbeat() {
       try {
-        const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/heartbeat.json', { cache: 'no-store' });
+        const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/heartbeat.json', { cache: 'reload' });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -263,13 +263,10 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      fetchData();
-      fetchHeartbeat();
+  fetchHeartbeat();
     });
     setInterval(() => {
-      fetchData();
-      triggerIndicator();
-      fetchHeartbeat();
+  fetchHeartbeat();
     }, 5000);
 
     function triggerIndicator() {
