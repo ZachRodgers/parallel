@@ -10,7 +10,6 @@ async function fetchHeartbeat() {
     console.log("Attempting to fetch heartbeat.json...");
 
     try {
-        // Fetching heartbeat.json with a timestamp to prevent caching
         const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/heartbeat.json?t=' + new Date().getTime(), { cache: 'no-store' });
 
         if (!response.ok) {
