@@ -37,6 +37,16 @@
       border: 2px solid;
       border-radius: 8px;
     }
+    .online {
+      background-color: #d4edda;
+      border-color: #155724;
+      color: #155724;
+    }
+    .offline {
+      background-color: #f8d7da;
+      border-color: #721c24;
+      color: #721c24;
+    }
     .button-wrapper {
       display: flex;
       gap: 10px; /* Add even spacing between buttons */
@@ -102,6 +112,16 @@
     .scrollable-table::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
+    /* Indicator styling */
+    #indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #00CCFF;
+      display: inline-block;
+      opacity: 0;
+      transition: opacity 1s ease-out;
+    }
 
     /* Mobile-specific styles */
     @media (max-width: 768px) {
@@ -143,7 +163,7 @@
     <div class="top-bar">
       <div id="status-box" class="status-box offline">Offline --°C</div>
       <div class="button-wrapper">
-        <button id="refresh" class="refresh-btn">Refresh</button>
+        <button id="refresh" class="refresh-btn">Refresh <span id="indicator"></span></button>
         <button id="download" class="download-btn">Download</button>
         <button id="reboot" class="reboot-btn">Reboot</button>
         <button id="shutdown" class="shutdown-btn">Shutdown</button>
@@ -208,18 +228,16 @@
     });
     setInterval(() => {
       fetchData();
+      triggerIndicator();
       updateButtonState();
     }, 5000);
 
     function triggerIndicator() {
       const indicator = document.getElementById('indicator');
-      if (indicator) {
-        indicator.style.opacity = 1;
-        indicator.style.transition = 'opacity 1s ease-out';
-        setTimeout(() => {
-          indicator.style.opacity = 0;
-        }, 1000);
-      }
+      indicator.style.opacity = 1;
+      setTimeout(() => {
+        indicator.style.opacity = 0;
+      }, 1000);
     }
 
     function updateButtonState() {
