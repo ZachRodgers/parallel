@@ -5,6 +5,8 @@ import time
 
 JETSON_IP = 'http://192.168.1.157:5000'  # Replace with your Jetson's IP address
 CHECK_INTERVAL = 10  # Interval in seconds to check Jetson status
+GITHUB_JSON_URL = 'https://api.github.com/repos/ZachRodgers/parallel/contents/heartbeat.json'
+TOKEN = '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'
 
 def get_jetson_status():
     try:
@@ -16,28 +18,48 @@ def get_jetson_status():
     except requests.RequestException:
         return {'status': 'offline', 'temperature': 'N/A'}
 
-def send_jetson_command(command):
+def update_heartbeat_on_github(data):
+    headers = {
+        'Authorization': f'token {TOKEN}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
     try:
-        response = requests.post(f"{JETSON_IP}/{command}")
+        # Get the current heartbeat.json data
+        response = requests.get(GITHUB_JSON_URL, headers=headers)
         if response.status_code == 200:
-            print(f"Jetson {command} command executed successfully.")
+            json_data = response.json()
+            sha = json_data['sha']
+            content = json.dumps(data).encode('utf-8').decode('latin1').encode('base64').decode('utf-8')
+
+            # Prepare the update payload
+            update_data = {
+                'message': 'Updating Jetson status',
+                'content': content,
+                'sha': sha
+            }
+
+            # Send the update request
+            update_response = requests.put(GITHUB_JSON_URL, headers=headers, json=update_data)
+            if update_response.status_code == 200:
+                print("Heartbeat updated successfully on GitHub.")
+            else:
+                print(f"Failed to update heartbeat: {update_response.status_code}")
         else:
-            print(f"Failed to execute {command} on Jetson.")
+            print(f"Failed to get current heartbeat data: {response.status_code}")
     except requests.RequestException as e:
-        print(f"Error communicating with Jetson: {e}")
+        print(f"Error updating heartbeat: {e}")
 
 def main():
     while True:
         status = get_jetson_status()
         print(f"Jetson Status: {status['status']} | Temperature: {status['temperature']}")
 
-        # Update the web interface with the current Jetson status
+        # Update the GitHub heartbeat.json with the current Jetson status
         data = {
             'status': status['status'],
             'temperature': status['temperature']
         }
-        with open('heartbeat.json', 'w') as json_file:
-            json.dump(data, json_file)
+        update_heartbeat_on_github(data)
 
         time.sleep(CHECK_INTERVAL)
 
