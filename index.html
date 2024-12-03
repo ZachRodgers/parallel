@@ -240,13 +240,11 @@
 
         const data = await response.json();
         let csvContent = 'data:text/csv;charset=utf-8,';
-        csvContent += 'LotID,Plate,Date,State
-';
+        csvContent += 'LotID,Plate,Date,State\n';
 
         data.entries.forEach(entryString => {
           const [lotID, plate, date, state] = entryString.split('_');
-          csvContent += `${lotID},${plate},${date},${state}
-`;
+          csvContent += `${lotID},${plate},${date},${state}\n`;
         });
 
         const encodedUri = encodeURI(csvContent);
@@ -256,10 +254,6 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      } catch (error) {
-        console.error('Error downloading data:', error);
-      }
-    }
       } catch (error) {
         console.error('Error downloading data:', error);
       }
