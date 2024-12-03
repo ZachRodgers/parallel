@@ -187,7 +187,6 @@
       </table>
     </div>
   </div>
-  <script src="heartbeat.js"></script>
   <script>
     document.getElementById('refresh').addEventListener('click', function() {
       triggerIndicator();
@@ -242,7 +241,24 @@
       }, 1000);
     }
 
-    // Confirm action before sending shutdown or reboot command
+    function updateButtonState() {
+      const statusBox = document.getElementById('status-box');
+      const isOffline = statusBox.classList.contains('offline');
+      const rebootButton = document.getElementById('reboot');
+      const shutdownButton = document.getElementById('shutdown');
+      if (isOffline) {
+        rebootButton.style.opacity = '0.3';
+        shutdownButton.style.opacity = '0.3';
+        rebootButton.disabled = true;
+        shutdownButton.disabled = true;
+      } else {
+        rebootButton.style.opacity = '1';
+        shutdownButton.style.opacity = '1';
+        rebootButton.disabled = false;
+        shutdownButton.disabled = false;
+      }
+    }
+
     document.getElementById('reboot').addEventListener('click', function() {
       if (confirm("Please confirm you are about to reboot the device.")) {
         sendCommand('reboot');
@@ -275,7 +291,6 @@
       }
     }
 
-    // Download button functionality for CSV file
     document.getElementById('download').addEventListener('click', function() {
       downloadDataAsCSV();
     });
@@ -308,6 +323,7 @@
       }
     }
   </script>
+  
   <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
     <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
   </div>
