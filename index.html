@@ -141,15 +141,15 @@
         padding: 15px;
         font-size: 16px;
       }
-      .button-row {
+      .button-wrapper {
         width: 100%;
         display: flex;
-        justify-content: space-between;
+        flex-wrap: wrap; /* Allow buttons to wrap into rows */
         gap: 10px;
         margin-bottom: 10px;
       }
-      .button-row button {
-        flex: 1;
+      .button-wrapper button {
+        flex: 1 1 calc(50% - 10px); /* Take 50% width minus gap for two buttons per row */
         padding: 10px;
         font-size: 16px;
       }
