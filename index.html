@@ -92,9 +92,7 @@
     .scrollable-table {
       max-height: 400px;
       overflow-y: auto;
-      padding-right: 20px;
-      width: calc(100% - 20px);
-      margin: 0 auto;
+      width: 100%; /* Removed margin for full extension */
     }
     .scrollable-table::-webkit-scrollbar {
       width: 14px;
@@ -109,6 +107,46 @@
     .scrollable-table::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
+
+    /* Mobile-specific styles */
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        padding: 20px;
+        height: auto;
+      }
+      .top-bar {
+        flex-direction: column;
+      }
+      .status-box {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 15px;
+        font-size: 16px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+      .refresh-btn,
+      .download-btn {
+        width: 48%;
+        display: inline-block;
+      }
+      .reboot-btn,
+      .shutdown-btn {
+        width: 48%;
+        display: inline-block;
+      }
+      .button-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 4%;
+        margin-bottom: 10px;
+      }
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="favicon.png">
@@ -117,13 +155,14 @@
   <div class="container">
     <div class="top-bar">
       <div id="status-box" class="status-box offline">Offline --°C</div>
-      <button id="refresh" class="refresh-btn" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <span>Refresh</span>
-        <span id="indicator" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #00CCFF; opacity: 0;"></span>
-      </button>
-      <button id="reboot" class="reboot-btn shutdown-btn">Reboot</button>
-      <button id="shutdown" class="shutdown-btn">Shutdown</button>
-      <button id="download" class="download-btn">Download</button>
+      <div class="button-row">
+        <button id="refresh" class="refresh-btn">Refresh</button>
+        <button id="download" class="download-btn">Download</button>
+      </div>
+      <div class="button-row">
+        <button id="reboot" class="reboot-btn">Reboot</button>
+        <button id="shutdown" class="shutdown-btn">Shutdown</button>
+      </div>
     </div>
     <div class="scrollable-table">
       <table>
@@ -161,32 +200,16 @@
         entriesElem.innerHTML = '';
 
         data.entries.slice().reverse().forEach(entryString => {
-          // Split the string into parts
           const [lotID, plate, date, state] = entryString.split('_');
-
-          // Create a new row for each entry
           const row = document.createElement('tr');
 
-          const lotCell = document.createElement('td');
-          lotCell.textContent = lotID;
-          row.appendChild(lotCell);
-
-          const plateCell = document.createElement('td');
-          plateCell.textContent = plate;
-          row.appendChild(plateCell);
-
-          const dateCell = document.createElement('td');
-          dateCell.textContent = date;
-          row.appendChild(dateCell);
-
-          const stateCell = document.createElement('td');
-          stateCell.textContent = state;
-          row.appendChild(stateCell);
-
-          const imgCell = document.createElement('td');
-          imgCell.textContent = 'N/A'; // Placeholder for image, if needed in the future
-          row.appendChild(imgCell);
-
+          row.innerHTML = `
+            <td>${lotID}</td>
+            <td>${plate}</td>
+            <td>${date}</td>
+            <td>${state}</td>
+            <td>N/A</td>
+          `;
           entriesElem.appendChild(row);
         });
       } catch (error) {
@@ -202,7 +225,8 @@
       fetchData();
       updateButtonState();
     }, 5000);
-  function triggerIndicator() {
+
+    function triggerIndicator() {
       const indicator = document.getElementById('indicator');
       indicator.style.opacity = 1;
       indicator.style.transition = 'opacity 1s ease-out';
@@ -210,7 +234,8 @@
         indicator.style.opacity = 0;
       }, 1000);
     }
-  function updateButtonState() {
+
+    function updateButtonState() {
       const statusBox = document.getElementById('status-box');
       const isOffline = statusBox.classList.contains('offline');
       const rebootButton = document.getElementById('reboot');
@@ -227,7 +252,8 @@
         shutdownButton.disabled = false;
       }
     }
-  document.getElementById('download').addEventListener('click', function() {
+
+    document.getElementById('download').addEventListener('click', function() {
       downloadDataAsCSV();
     });
 
@@ -260,8 +286,8 @@
     }
   </script>
   
-<div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
-  <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
-</div>
+  <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
+    <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
+  </div>
 </body>
 </html>
