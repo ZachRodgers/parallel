@@ -213,24 +213,29 @@
     </div>
   </div>
 <script>
-    // Basic function to fetch heartbeat.json and verify if it's working
-    async function fetchHeartbeat() {
-        try {
-            // Alert to show that fetchHeartbeat function is being called
-            alert("Fetching heartbeat.json...");
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Page loaded - Starting heartbeat fetch test");
+        setInterval(fetchHeartbeat, 5000);  // Call fetchHeartbeat every 5 seconds
+    });
 
+    async function fetchHeartbeat() {
+        console.log("Attempting to fetch heartbeat.json...");
+
+        try {
+            // Fetching heartbeat.json with a timestamp to prevent caching
             const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/heartbeat.json?t=' + new Date().getTime(), { cache: 'no-store' });
 
             if (!response.ok) {
-                throw new Error('Network response was not ok for heartbeat.json');
+                console.error("Error fetching heartbeat.json: Response not ok");
+                return;
             }
 
             const data = await response.json();
 
-            // Alert to show the data fetched
-            alert(`Fetched heartbeat data: Status = ${data.status}, Temperature = ${data.temperature}`);
+            // Log the response to the console
+            console.log("Heartbeat fetched successfully: ", data);
 
-            // Updating status box
+            // Update the status box accordingly
             const statusBox = document.getElementById('status-box');
             if (data.status === 'online') {
                 statusBox.classList.remove('offline');
@@ -242,14 +247,10 @@
                 statusBox.textContent = 'Offline --°C';
             }
         } catch (error) {
-            alert('Error fetching heartbeat data: ' + error);
+            console.error('Fetch heartbeat error:', error);
         }
     }
-
-    // Trigger fetchHeartbeat every 5 seconds
-    setInterval(fetchHeartbeat, 5000);
 </script>
-
 
   <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
     <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
