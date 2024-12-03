@@ -228,10 +228,10 @@
       }
     }
   document.getElementById('download').addEventListener('click', function() {
-      downloadDataAsExcel();
+      downloadDataAsCSV();
     });
 
-    async function downloadDataAsExcel() {
+    async function downloadDataAsCSV() {
       try {
         const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/data.json', { cache: 'no-store' });
         if (!response.ok) {
@@ -239,33 +239,33 @@
         }
 
         const data = await response.json();
-        let workbook = XLSX.utils.book_new();
-        workbook.Props = {
-          Title: "Parking Data",
-          Subject: "Parking Lot Entries",
-          Author: "Parallel Developer",
-          CreatedDate: new Date()
-        };
-
-        let worksheet_data = [
-          ["LotID", "Plate", "Date", "State"]
-        ];
+        let csvContent = 'data:text/csv;charset=utf-8,';
+        csvContent += 'LotID,Plate,Date,State
+';
 
         data.entries.forEach(entryString => {
           const [lotID, plate, date, state] = entryString.split('_');
-          worksheet_data.push([lotID, plate, date, state]);
+          csvContent += `${lotID},${plate},${date},${state}
+`;
         });
 
-        let worksheet = XLSX.utils.aoa_to_sheet(worksheet_data);
-        XLSX.utils.book_append_sheet(workbook, worksheet, "ParkingEntries");
-
-        XLSX.writeFile(workbook, 'parking_data.xlsx');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'parking_data.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('Error downloading data:', error);
+      }
+    }
       } catch (error) {
         console.error('Error downloading data:', error);
       }
     }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
   <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
 </div>
