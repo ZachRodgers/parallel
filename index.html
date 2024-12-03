@@ -241,6 +241,39 @@
         indicator.style.opacity = 0;
       }, 1000);
     }
+
+    // Confirm action before sending shutdown or reboot command
+    document.getElementById('reboot').addEventListener('click', function() {
+      if (confirm("Please confirm you are about to reboot the device.")) {
+        sendCommand('reboot');
+      }
+    });
+
+    document.getElementById('shutdown').addEventListener('click', function() {
+      if (confirm("Please confirm you are about to shutdown the device.")) {
+        sendCommand('shutdown');
+      }
+    });
+
+    async function sendCommand(command) {
+      try {
+        const response = await fetch('https://your-jetson-endpoint-url', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ command: command })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to send command');
+        }
+
+        console.log(`${command} command sent successfully`);
+      } catch (error) {
+        console.error(`Error sending ${command} command:`, error);
+      }
+    }
   </script>
   <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
     <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
