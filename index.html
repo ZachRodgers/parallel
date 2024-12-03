@@ -212,108 +212,11 @@
       </table>
     </div>
   </div>
-  <script>
-    alert("JavaScript is running!"); // Basic alert to confirm if JavaScript is being executed
-
-    document.getElementById('refresh').addEventListener('click', function () {
-      console.log('Refresh button clicked');
-      triggerIndicator();
-      fetchData();
-      fetchHeartbeat();
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-      console.log("DOMContentLoaded event fired");
-      fetchData();
-      fetchHeartbeat();
-      setInterval(() => {
-        console.log("Fetching heartbeat and data...");
-        fetchHeartbeat();
-        fetchData();
-      }, 5000);
-    });
-
-    async function fetchData() {
-      triggerIndicator();
-      try {
-        console.log("Fetching data.json...");
-        const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/data.json?t=' + new Date().getTime(), { cache: 'no-store' });
-        if (!response.ok) {
-          throw new Error('Network response was not ok for data.json');
-        }
-
-        const data = await response.json();
-        console.log("Data fetched from data.json:", data);
-        const entriesElem = document.getElementById('entries');
-        entriesElem.innerHTML = '';
-
-        data.entries.slice().reverse().forEach(entryString => {
-          const [lotID, plate, date, state] = entryString.split('_');
-          const row = document.createElement('tr');
-
-          row.innerHTML = `
-            <td>${lotID}</td>
-            <td>${plate}</td>
-            <td>${date}</td>
-            <td>${state}</td>
-            <td>N/A</td>
-          `;
-          entriesElem.appendChild(row);
-        });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    async function fetchHeartbeat() {
-      try {
-        console.log("Fetching heartbeat.json...");
-        const response = await fetch('https://raw.githubusercontent.com/ZachRodgers/parallel/main/heartbeat.json?t=' + new Date().getTime(), { cache: 'no-store' });
-        if (!response.ok) {
-          throw new Error('Network response was not ok for heartbeat.json');
-        }
-
-        const data = await response.json();
-        console.log("Heartbeat data fetched:", data);
-
-        const statusBox = document.getElementById('status-box');
-        const rebootButton = document.getElementById('reboot');
-        const shutdownButton = document.getElementById('shutdown');
-
-        if (data.status === 'online') {
-          statusBox.classList.remove('offline');
-          statusBox.classList.add('online');
-          statusBox.textContent = `Online ${data.temperature}`;
-
-          // Set buttons to full opacity and enable them
-          rebootButton.style.opacity = '1';
-          shutdownButton.style.opacity = '1';
-          rebootButton.disabled = false;
-          shutdownButton.disabled = false;
-        } else {
-          statusBox.classList.remove('online');
-          statusBox.classList.add('offline');
-          statusBox.textContent = 'Offline --°C';
-
-          // Set buttons to 30% opacity and disable them
-          rebootButton.style.opacity = '0.3';
-          shutdownButton.style.opacity = '0.3';
-          rebootButton.disabled = true;
-          shutdownButton.disabled = true;
-        }
-      } catch (error) {
-        console.error('Error fetching heartbeat data:', error);
-      }
-    }
-
-    function triggerIndicator() {
-      const indicator = document.getElementById('indicator');
-      indicator.style.opacity = 1;
-      setTimeout(() => {
-        indicator.style.opacity = 0;
-      }, 1000);
-    }
-  </script>
+<script>
+    // Minimal JavaScript to check if code runs
+    alert("JavaScript is executing!");
+    console.log("JavaScript is running!");
+</script>
 
   <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
     <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
