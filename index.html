@@ -252,6 +252,36 @@
       link.click();
       document.body.removeChild(link);
     }
+  document.getElementById('download').addEventListener('click', function() {
+      downloadTableData();
+    });
+
+    function downloadTableData() {
+      const table = document.querySelector('table');
+      let csvContent = 'data:text/csv;charset=utf-8,';
+
+      // Get table headers
+      const headers = Array.from(table.querySelectorAll('thead th'));
+      csvContent += headers.map(header => header.textContent).join(',') + '
+';
+
+      // Get table rows
+      const rows = Array.from(table.querySelectorAll('tbody tr'));
+      rows.forEach(row => {
+        const cells = Array.from(row.querySelectorAll('td'));
+        const rowData = cells.map(cell => cell.textContent).join(',');
+        csvContent += rowData + '
+';
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'parking_data.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 <div class="logo-container" style="text-align: center; margin-top: 40px; padding-bottom: 20px; width: 100%; position: absolute; bottom: 20px;">
   <img src="PoweredbyParallel.svg" alt="Powered by Parallel" style="width: 150px;">
