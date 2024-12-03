@@ -1,10 +1,10 @@
-
+# Part 1: GitHub-hosted script to communicate with Jetson
 import requests
 import json
 import time
 
 JETSON_IP = 'http://192.168.1.157:5000'  # Replace with your Jetson's IP address
-CHECK_INTERVAL = 5  # Interval in seconds to check Jetson status
+CHECK_INTERVAL = 10  # Interval in seconds to check Jetson status
 
 def get_jetson_status():
     try:
@@ -36,7 +36,7 @@ def main():
             'status': status['status'],
             'temperature': status['temperature']
         }
-        with open('data.json', 'w') as json_file:
+        with open('heartbeat.json', 'w') as json_file:
             json.dump(data, json_file)
 
         time.sleep(CHECK_INTERVAL)
